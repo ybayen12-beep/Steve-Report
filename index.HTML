@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waldman Investigation — Master Case File</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #060608;
+  --ink: #0d0f12;
+  --panel: #111318;
+  --card: #161a20;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e2e4e8;
+  --muted: #8890a0;
+  --dim: #464c58;
+  --red: #e83535;
+  --red2: #ff5555;
+  --amber: #f0a020;
+  --green: #22c97a;
+  --blue: #4a9eff;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --display: 'Bebas Neue', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--black); color: var(--text); font-family: var(--sans); font-size: 13px; line-height: 1.6; min-height: 100vh; }
+body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px); pointer-events: none; z-index: 9999; }
+.page { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.masthead { border-bottom: 1px solid var(--border2); padding-bottom: 2rem; margin-bottom: 2rem; }
+.case-stamp { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: .2em; text-transform: uppercase; margin-bottom: 12px; }
+.case-title { font-family: var(--display); font-size: clamp(42px, 6vw, 72px); letter-spacing: .04em; color: var(--text); line-height: 1; margin-bottom: 6px; }
+.case-title span { color: var(--red); }
+.case-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; }
+.live-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(232,53,53,0.1); border: 1px solid rgba(232,53,53,0.3); border-radius: 2px; padding: 6px 14px; font-family: var(--mono); font-size: 10px; color: var(--red2); letter-spacing: .12em; margin-top: 1rem; }
+.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red2); animation: blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 2rem; }
+.metric { background: var(--card); border: 1px solid var(--border); padding: .75rem 1rem; position: relative; overflow: hidden; }
+.metric::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.metric.danger::before { background: var(--red); }
+.metric.warn::before { background: var(--amber); }
+.metric.ok::before { background: var(--green); }
+.metric.info::before { background: var(--blue); }
+.metric-label { font-family: var(--mono); font-size: 9px; color: var(--dim); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+.metric-val { font-family: var(--display); font-size: 26px; letter-spacing: .02em; line-height: 1; }
+.metric.danger .metric-val { color: var(--red2); }
+.metric.warn .metric-val { color: var(--amber); }
+.metric.ok .metric-val { color: var(--green); }
+.metric.info .metric-val { color: var(--blue); }
+.section-header { display: flex; align-items: center; gap: 12px; margin: 2rem 0 1rem; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.section-num { font-family: var(--display); font-size: 32px; color: var(--red); line-height: 1; }
+.section-title { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.card { background: var(--card); border: 1px solid var(--border); padding: 1.1rem 1.25rem; }
+.card-red { background: rgba(232,53,53,0.05); border-color: rgba(232,53,53,0.2); }
+.card-amber { background: rgba(240,160,32,0.05); border-color: rgba(240,160,32,0.2); }
+.card-title { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; }
+.ct-red { color: var(--red); } .ct-amber { color: var(--amber); } .ct-green { color: var(--green); } .ct-blue { color: var(--blue); } .ct-dim { color: var(--dim); }
+.row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.row:last-child { border-bottom: none; }
+.dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+.dot-red { background: var(--red); } .dot-amber { background: var(--amber); } .dot-green { background: var(--green); } .dot-blue { background: var(--blue); } .dot-dim { background: var(--dim); }
+.row-txt { color: var(--muted); line-height: 1.5; }
+.row-txt strong { color: var(--text); font-weight: 500; }
+.yr { font-family: var(--mono); font-size: 10px; color: var(--dim); min-width: 58px; flex-shrink: 0; margin-top: 2px; }
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.kv:last-child { border-bottom: none; }
+.kk { color: var(--muted); }
+.kv-v { color: var(--text); font-weight: 500; font-family: var(--mono); font-size: 11px; text-align: right; }
+.tag { font-family: var(--mono); font-size: 9px; font-weight: 600; padding: 2px 7px; letter-spacing: .06em; white-space: nowrap; }
+.t-red { background: rgba(232,53,53,0.15); color: var(--red2); border: 1px solid rgba(232,53,53,0.25); }
+.t-amber { background: rgba(240,160,32,0.12); color: var(--amber); border: 1px solid rgba(240,160,32,0.25); }
+.t-green { background: rgba(34,201,122,0.12); color: var(--green); border: 1px solid rgba(34,201,122,0.25); }
+.t-blue { background: rgba(74,158,255,0.12); color: var(--blue); border: 1px solid rgba(74,158,255,0.25); }
+.t-dim { background: rgba(255,255,255,0.04); color: var(--dim); border: 1px solid var(--border2); }
+.pol-wrap { background: rgba(34,201,122,0.04); border: 1px solid rgba(34,201,122,0.2); padding: 1.25rem; margin-bottom: 10px; }
+.pol-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.pol-title { font-family: var(--mono); font-size: 9px; color: var(--green); letter-spacing: .14em; text-transform: uppercase; }
+.death-date-cross { font-family: var(--display); font-size: 22px; color: rgba(232,53,53,0.4); letter-spacing: .04em; text-decoration: line-through; text-decoration-color: var(--red); }
+.timeline { display: grid; grid-template-columns: 90px 1fr; gap: 0; }
+.tl-item { display: contents; }
+.tl-date { font-family: var(--mono); font-size: 10px; color: var(--green); font-weight: 600; padding: 8px 16px 8px 0; border-right: 2px solid rgba(34,201,122,0.3); text-align: right; position: relative; }
+.tl-date::after { content: ''; position: absolute; right: -5px; top: 50%; transform: translateY(-50%); width: 8px; height: 8px; border-radius: 50%; background: var(--green); border: 2px solid var(--black); }
+.tl-content { padding: 8px 0 8px 16px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.tl-content strong { color: var(--text); font-weight: 500; display: block; margin-bottom: 2px; }
+.tl-source { font-family: var(--mono); font-size: 9px; color: rgba(34,201,122,0.6); letter-spacing: .04em; }
+.findings { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; font-size: 12px; color: var(--muted); line-height: 1.7; }
+.f-num { color: var(--red); font-family: var(--mono); font-size: 9px; font-weight: 600; margin-right: 6px; }
+.phone-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+.phone-row:last-child { border-bottom: none; }
+.phone-num { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text); }
+.phone-desc { font-size: 11px; color: var(--dim); margin-top: 2px; }
+.conf-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.conf-bar { height: 3px; border-radius: 2px; background: rgba(74,158,255,0.15); width: 70px; }
+.conf-fill { height: 3px; border-radius: 2px; background: var(--blue); }
+.alert { padding: 1rem 1.25rem; margin-bottom: 10px; }
+.alert-red { background: rgba(232,53,53,0.07); border: 1px solid rgba(232,53,53,0.2); border-left: 3px solid var(--red); }
+.alert-amber { background: rgba(240,160,32,0.07); border: 1px solid rgba(240,160,32,0.2); border-left: 3px solid var(--amber); }
+.alert-title { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 6px; }
+.alert-red .alert-title { color: var(--red); }
+.alert-amber .alert-title { color: var(--amber); }
+.alert-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.alert-body strong { color: var(--text); font-weight: 500; }
+.footer { border-top: 1px solid var(--border); margin-top: 3rem; padding-top: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.footer-stamp { font-family: var(--mono); font-size: 10px; color: var(--dim); line-height: 1.8; }
+.footer-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-start; }
+.subjects { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.subject-card { background: var(--card); border: 1px solid var(--border); padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 10px; }
+.subj-header { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 42px; height: 42px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 16px; letter-spacing: .04em; flex-shrink: 0; }
+.av-blue { background: rgba(74,158,255,0.12); color: var(--blue); border: 1px solid rgba(74,158,255,0.2); }
+.av-red { background: rgba(232,53,53,0.1); color: var(--red2); border: 1px solid rgba(232,53,53,0.2); }
+.subj-name { font-family: var(--display); font-size: 20px; letter-spacing: .04em; line-height: 1.1; }
+.subj-sub { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 3px; }
+@media (max-width: 720px) { .grid2, .grid3, .subjects { grid-template-columns: 1fr; } .findings { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="masthead">
+  <div class="case-stamp">// BCK-2025-04-00142 &nbsp;·&nbsp; F-04-031356 &nbsp;·&nbsp; GENERATED 05/14/2026 &nbsp;·&nbsp; 9 SOURCE DOCUMENTS &nbsp;·&nbsp; FOR LICENSED INVESTIGATOR USE ONLY</div>
+  <div class="case-title">WALDMAN<br><span>INVESTIGATION</span></div>
+  <div class="case-sub">STEVEN ADAM WALDMAN &amp; VERONICA LEE WALDMAN &nbsp;·&nbsp; MIAMI-DADE, FL &nbsp;·&nbsp; PALM HARBOR, FL &nbsp;·&nbsp; KEY LARGO, FL</div>
+  <div class="live-badge"><div class="pulse-dot"></div>PROBATION ACTIVE — 4TH VOP PENDING — FORGERY SUSPECTED</div>
+</div>
+<div class="metrics">
+  <div class="metric danger"><div class="metric-label">Status</div><div class="metric-val">Active</div></div>
+  <div class="metric warn"><div class="metric-label">Prob. Ends</div><div class="metric-val">2031</div></div>
+  <div class="metric danger"><div class="metric-label">VOP Count</div><div class="metric-val">4th</div></div>
+  <div class="metric danger"><div class="metric-label">Restitution</div><div class="metric-val">$434K</div></div>
+  <div class="metric danger"><div class="metric-label">Victims</div><div class="metric-val">71</div></div>
+  <div class="metric danger"><div class="metric-label">IRS Liens</div><div class="metric-val">$4.2M</div></div>
+  <div class="metric info"><div class="metric-label">Charges</div><div class="metric-val">163</div></div>
+  <div class="metric info"><div class="metric-label">Dockets</div><div class="metric-val">1309</div></div>
+  <div class="metric ok"><div class="metric-label">In Custody</div><div class="metric-val">No</div></div>
+  <div class="metric ok"><div class="metric-label">V. Alive</div><div class="metric-val">YES</div></div>
+</div>
+<div class="section-header"><div class="section-num">01</div><div class="section-title">Subjects</div></div>
+<div class="subjects">
+  <div class="subject-card">
+    <div class="subj-header"><div class="avatar av-blue">SAW</div><div><div class="subj-name">Steven Adam Waldman</div><div class="subj-sub">DOB 05/17/1963 &nbsp;·&nbsp; DC# M56171 &nbsp;·&nbsp; SSN ends -7266</div></div></div>
+    <div>
+      <div class="kv"><span class="kk">Current address (DOC verified)</span><span class="kv-v">3430 Hillman Dr, Palm Harbor FL</span></div>
+      <div class="kv"><span class="kk">FDOC status (05/10/2026)</span><span class="kv-v" style="color:var(--red)">Active supervised population</span></div>
+      <div class="kv"><span class="kk">Probation officer</span><span class="kv-v">Fletcher, Steve · (727) 469-5900</span></div>
+      <div class="kv"><span class="kk">Defense attorney</span><span class="kv-v">Prosky, Jacqueline (Public Defender)</span></div>
+      <div class="kv"><span class="kk">Employment (per PO)</span><span class="kv-v" style="color:var(--amber)">UNEMPLOYED — claims disability</span></div>
+      <div class="kv"><span class="kk">Income reported</span><span class="kv-v" style="color:var(--red)">None</span></div>
+      <div class="kv"><span class="kk">Top phone</span><span class="kv-v">(305) 935-1236 · 100%</span></div>
+      <div class="kv"><span class="kk">Father (attorney)</span><span class="kv-v">Ivan N. Waldman · Chapel Hill NC</span></div>
+      <div class="kv"><span class="kk">Brother</span><span class="kv-v">Scott Michael Waldman · Narberth PA</span></div>
+    </div>
+  </div>
+  <div class="subject-card">
+    <div class="subj-header"><div class="avatar av-red">VLW</div><div><div class="subj-name">Veronica Lee Waldman</div><div class="subj-sub">née Krebs &nbsp;·&nbsp; DOB ~1969 &nbsp;·&nbsp; SSN ends -2330 &nbsp;·&nbsp; <span style="color:var(--green)">ALIVE — CONFIRMED</span></div></div></div>
+    <div>
+      <div class="kv"><span class="kk">Most recent address</span><span class="kv-v">101425 Overseas Hwy, Key Largo FL</span></div>
+      <div class="kv"><span class="kk">DOC confirmed at</span><span class="kv-v">3430 Hillman Dr Palm Harbor (12/27/2024)</span></div>
+      <div class="kv"><span class="kk">FL DL renewed</span><span class="kv-v" style="color:var(--green)">05/17/2019 · Active to 01/16/2027</span></div>
+      <div class="kv"><span class="kk">Last employer</span><span class="kv-v">DWGI · 10/2023 → 03/2025</span></div>
+      <div class="kv"><span class="kk">Criminal record</span><span class="kv-v" style="color:var(--green)">None</span></div>
+      <div class="kv"><span class="kk">Best phone</span><span class="kv-v">(305) 916-0519 mobile · DWGI</span></div>
+      <div class="kv"><span class="kk">Also try</span><span class="kv-v">(305) 935-1236 · (727) 262-8242</span></div>
+      <div class="kv"><span class="kk">Mother (caretaker)</span><span class="kv-v">Cheri Krebs · Palm Harbor · (727) 459-7722</span></div>
+      <div class="kv"><span class="kk">Fake death cert signed</span><span class="kv-v" style="color:var(--red)">01/16/2026 by Steven — FABRICATED</span></div>
+    </div>
+  </div>
+</div>
+<div class="section-header"><div class="section-num">02</div><div class="section-title">Veronica — Proof of Life Chain</div></div>
+<div class="pol-wrap">
+  <div class="pol-header">
+    <div class="pol-title">10 independent records — 2019 through 12/07/2025 — all post-date claimed 2016 death</div>
+    <div class="death-date-cross">DIED AUG 26, 2016</div>
+  </div>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-date">05/17/2019</div><div class="tl-content"><strong>FL Driver's License Renewed</strong> Active to 01/16/2027. Address: 2901 S Bayshore Dr PH-B Miami. <span class="tl-source">SOURCE: FL DHSMV — independent govt record</span></div></div>
+    <div class="tl-item"><div class="tl-date">07/22/2019</div><div class="tl-content"><strong>Florida Supreme Court — Personal Signature</strong> SC19-988. Filed Pro Se appeal against Laquer Family Holdings. Personally signed and submitted. Her own email and phone on the filing. <span class="tl-source">SOURCE: FL SUPREME COURT — strongest independent record</span></div></div>
+    <div class="tl-item"><div class="tl-date">04/22/2020</div><div class="tl-content"><strong>COVID-19 Charity Press Release</strong> Named as DWGI principal announcing 18% of profits donated to ASPCA. <span class="tl-source">SOURCE: PR.COM — public press release</span></div></div>
+    <div class="tl-item"><div class="tl-date">05/05/2020</div><div class="tl-content"><strong>Cash Referral Program Press Release</strong> Named and quoted as DWGI principal. <span class="tl-source">SOURCE: PR.COM / PRLOG — public press release</span></div></div>
+    <div class="tl-item"><div class="tl-date">2022</div><div class="tl-content"><strong>Veronica Lee Waldman v. Wilma Perez</strong> Filed lawsuit in Monroe County Court. Appealed to Third DCA — dismissed 08/26/2022. She was the plaintiff. <span class="tl-source">SOURCE: FL 3RD DCA — independent court record</span></div></div>
+    <div class="tl-item"><div class="tl-date">10/2023–03/2025</div><div class="tl-content"><strong>Active Employment at DWGI</strong> Employer record active 17 months. <span class="tl-source">SOURCE: Background report employment database</span></div></div>
+    <div class="tl-item"><div class="tl-date">12/27/2024</div><div class="tl-content"><strong>Florida DOC Sworn Violation Report</strong> PO Fletcher under penalty of perjury: "The offender resides with his wife Veronica Waldman and his mother-in-law Cheri Krebs at 3430 Hillman Drive Palm Harbor FL 34685." <span class="tl-source">SOURCE: FDOC DC3-202 — sworn government document</span></div></div>
+    <div class="tl-item"><div class="tl-date">12/07/2025</div><div class="tl-content"><strong>Defense Attorney Files Her Medical Records</strong> "Veronica Waldman Discharge and Diagnosis" submitted as court evidence by Steven's own public defender. <span class="tl-source">SOURCE: Miami-Dade Circuit Court docket Din 1305</span></div></div>
+  </div>
+</div>
+<div class="section-header"><div class="section-num">03</div><div class="section-title">Forged Death Certificate — Analysis</div></div>
+<div class="alert alert-red" style="margin-bottom:10px">
+  <div class="alert-title">Affidavit to Establish a Death Certificate — signed & notarized January 16, 2026 by Steven A. Waldman</div>
+  <div class="alert-body">Claims: Veronica L. Waldman died <strong>August 26, 2016</strong> · Brain Injury · Contributing: Schizophrenia · Facility: St. Elizabeth, Lansing MI · County: <strong>Boone County</strong> · Notarized by Marie G. Dohler HH 406523. Signed while under active felony probation.</div>
+</div>
+<div class="grid2">
+  <div class="card card-red">
+    <div class="card-title ct-red">Fatal flaws in the document</div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>Notarized January 2026</strong> — created 4 months ago while VOP proceedings active.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>Boone County is in Missouri</strong> — not Michigan where St. Elizabeth Lansing is located.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>Medical certifier: "Unknown"</strong> — invalid on any legitimate death certificate.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>Residence address from 2003–2006</strong> — a decade before the claimed 2016 death.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>His own attorney filed her medical records</strong> one month earlier (12/07/2025).</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>She personally signed FL Supreme Court filing</strong> July 22, 2019 — 3 years post death.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>No obituary anywhere</strong> — zero results across Legacy.com, Find A Grave, Ancestry, newspapers.com.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>No SSDI entry</strong> — SSA has no death record for Veronica Lee Waldman or Krebs DOB 1969.</div></div>
+  </div>
+  <div class="card card-amber">
+    <div class="card-title ct-amber">Possible motives</div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt"><strong>Asset consolidation</strong> — Veronica holds DWGI President title and accounts. Death cert transfers control.</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt"><strong>Income concealment</strong> — her income shields his from PO financial scrutiny.</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt"><strong>VW Family Trust</strong> — successor trustee rights would transfer to him.</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt"><strong>VOP proceedings</strong> — signed January 2026 during active VOP hearing and financial disclosures.</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt"><strong>Possible exploitation</strong> — if Veronica is incapacitated, consolidates control before Cheri (age 75) can no longer manage her affairs.</div></div>
+  </div>
+</div>
+<div class="section-header"><div class="section-num">04</div><div class="section-title">Current VOP — 4th Violation</div></div>
+<div class="grid2">
+  <div>
+    <div class="alert alert-red"><div class="alert-title">Violation 1 — Restitution Delinquent</div><div class="alert-body">Original: <strong>$674,364.36 to 71 victims</strong>. Balance: <strong>$434,941.82</strong>. Required $850/month since Jan 2022. <strong>Zero payments since 04/05/2024.</strong></div></div>
+    <div class="alert alert-red"><div class="alert-title">Violation 2 — Tax Return Not Provided</div><div class="alert-body">Required sworn 2023 tax return by April 15, 2024 as special plea condition. Not provided as of 12/27/2024.</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title ct-dim">Complete VOP History</div>
+    <div class="row"><div class="dot dot-amber"></div><div class="yr">01/08/10</div><div class="row-txt"><strong>VOP #1</strong> — Restitution. ROR next day. Reinstated 04/08/2011.</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="yr">04/06/17</div><div class="row-txt"><strong>VOP #2</strong> — Restitution. Reinstated 09/30/2020 + 10yr extension.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="yr">05/22/23</div><div class="row-txt"><strong>VOP #3</strong> — <strong>New arrest: Petit Theft</strong> + restitution. Reinstated 04/05/2024.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="yr">12/27/24</div><div class="row-txt"><strong>VOP #4 (current)</strong> — Restitution + tax return. PO deposed 01/27/2026. Hearing unknown.</div></div>
+  </div>
+</div>
+<div class="section-header"><div class="section-num">05</div><div class="section-title">Defense Strategy & Contradictions</div></div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-title ct-blue">Defense exhibits filed 12/07/2025</div>
+    <div class="row"><div class="dot dot-blue"></div><div class="row-txt"><strong>SSDI disability application</strong> Oct 2023 — foundation of "unable to work" claim</div></div>
+    <div class="row"><div class="dot dot-blue"></div><div class="row-txt"><strong>Division of Blind Services / Vocational Rehab</strong> — claims severe vision impairment</div></div>
+    <div class="row"><div class="dot dot-blue"></div><div class="row-txt"><strong>Dr. Mitchell Drucher letter</strong> — supporting medical documentation</div></div>
+    <div class="row"><div class="dot dot-blue"></div><div class="row-txt"><strong>2023 taxes + IRS extension</strong> — addresses Violation 2</div></div>
+    <div class="row"><div class="dot dot-blue"></div><div class="row-txt"><strong>Veronica Waldman Discharge and Diagnosis</strong> — confirms she is alive with current medical records</div></div>
+  </div>
+  <div class="card card-red">
+    <div class="card-title ct-red">Key contradictions</div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>Claims zero income</strong> while Veronica employed at diamond business through 03/2025.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>2013 Porsche Cayenne</strong> registered 05/2020–05/2023 while claiming no income.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>Public defender appointed</strong> while business generates $1M+ revenue in Veronica's name.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>Death cert signed 01/16/2026</strong> while attorney filed her medical records 12/07/2025.</div></div>
+  </div>
+</div>
+<div class="section-header"><div class="section-num">06</div><div class="section-title">Financial Exposure</div></div>
+<div class="grid3">
+  <div class="card">
+    <div class="card-title ct-red">IRS Liens ~$4.2M</div>
+    <div class="kv"><span class="kk">Steven — Pinellas 1040 (1999–2002)</span><span class="kv-v" style="color:var(--red)">$1,742,696</span></div>
+    <div class="kv"><span class="kk">Steven — Dade 1040 (1999–2000)</span><span class="kv-v" style="color:var(--red)">$745,064</span></div>
+    <div class="kv"><span class="kk">Steven — Dade 6651F</span><span class="kv-v" style="color:var(--red)">$533,215</span></div>
+    <div class="kv"><span class="kk">Joint (Steven + Veronica)</span><span class="kv-v" style="color:var(--red)">$309,296</span></div>
+    <div class="kv"><span class="kk">Veronica — Dade multi</span><span class="kv-v" style="color:var(--amber)">$20,527</span></div>
+    <div class="kv"><span class="kk">Veronica — Pinellas 6672</span><span class="kv-v" style="color:var(--amber)">$5,289</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title ct-red">Foreclosures & Bankruptcy</div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt"><strong>19425 39th Ave Golden Beach</strong> — $460,733</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt"><strong>19442 38th Ct Golden Beach</strong> — $829,755</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>2901 S Bayshore APT 18B (VW Trust)</strong> — $915,852. Sold 2019 for $1.05M.</div></div>
+    <div class="row"><div class="dot dot-dim"></div><div class="row-txt">4 bankruptcies total — all dismissed</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title ct-dim">Business Network</div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt"><strong>DWGI</strong> — Veronica: President. Steven: CFO. Dissolved 09/2023. Still operating.</div></div>
+    <div class="row"><div class="dot dot-dim"></div><div class="row-txt"><strong>CDGI</strong> — Veronica: President. Inactive ~2019.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>2013 victim:</strong> "Steve is hiding behind his wife's company — he is the engine."</div></div>
+  </div>
+</div>
+<div class="section-header"><div class="section-num">07</div><div class="section-title">Contact Information</div></div>
+<div class="grid2">
+  <div class="card">
+    <div class="card-title ct-blue">Veronica — Phones</div>
+    <div class="phone-row"><div><div class="phone-num">(305) 916-0519</div><div class="phone-desc">Mobile · DWGI · TRY FIRST</div></div><span class="tag t-green">66%</span></div>
+    <div class="phone-row"><div><div class="phone-num">(305) 935-1236</div><div class="phone-desc">Landline · Shared household</div></div><span class="tag t-blue">100%</span></div>
+    <div class="phone-row"><div><div class="phone-num">(727) 262-8242</div><div class="phone-desc">Mobile · Palm Harbor area</div></div><span class="tag t-dim">39%</span></div>
+    <div style="margin-top:10px;padding:8px;background:rgba(34,201,122,0.06);border:1px solid rgba(34,201,122,0.15);font-size:11px;color:var(--muted)"><strong style="color:var(--green)">Emails:</strong> vlwsaw@gmail.com · veronica@certifieddiamonddealers.com</div>
+  </div>
+  <div class="card">
+    <div class="card-title ct-blue">Key Case Contacts</div>
+    <div class="kv"><span class="kk">Miami-Dade Criminal Clerk</span><span class="kv-v">(305) 275-1155</span></div>
+    <div class="kv"><span class="kk">PO Steve Fletcher</span><span class="kv-v">(727) 469-5900</span></div>
+    <div class="kv"><span class="kk">Miami-Dade SAO</span><span class="kv-v">1350 NW 12th Ave, Miami FL 33136</span></div>
+    <div class="kv"><span class="kk">FL Vital Records</span><span class="kv-v">(904) 359-6900</span></div>
+    <div class="kv"><span class="kk">Michigan Vital Records</span><span class="kv-v">(517) 335-8666</span></div>
+    <div class="kv"><span class="kk">Cheri Krebs (mother)</span><span class="kv-v">(727) 459-7722</span></div>
+    <div class="kv"><span class="kk">DWGI main line</span><span class="kv-v">(305) 560-0072</span></div>
+  </div>
+</div>
+<div class="section-header"><div class="section-num">08</div><div class="section-title">Master Findings</div></div>
+<div class="card card-red">
+  <div class="card-title ct-red" style="margin-bottom:14px">9 source documents · 10 proof-of-life records · 22 years of court history</div>
+  <div class="findings">
+    <div><span class="f-num">01</span>Veronica alive — 10 independent records through 12/07/2025</div>
+    <div><span class="f-num">02</span>Death certificate notarized 01/16/2026 — for a living person</div>
+    <div><span class="f-num">03</span>Her own attorney filed her medical records 12/07/2025</div>
+    <div><span class="f-num">04</span>She personally signed FL Supreme Court filing 07/22/2019</div>
+    <div><span class="f-num">05</span>She filed Monroe County lawsuit as plaintiff — 2022</div>
+    <div><span class="f-num">06</span>DOC sworn report places her with Steven 12/27/2024</div>
+    <div><span class="f-num">07</span>No obituary, no SSDI, no Find A Grave memorial anywhere</div>
+    <div><span class="f-num">08</span>71 victims owed $434,941 — zero payments since 04/05/2024</div>
+    <div><span class="f-num">09</span>4th probation violation — all restitution non-payment</div>
+    <div><span class="f-num">10</span>VOP #3 included new criminal charge: Petit Theft 05/22/2023</div>
+    <div><span class="f-num">11</span>Claims zero income while connected to active diamond business</div>
+    <div><span class="f-num">12</span>Probation extended 10 years in 2020 — ends 08/07/2031</div>
+    <div><span class="f-num">13</span>PO deposed 01/27/2026 — VOP hearing outcome unknown</div>
+    <div><span class="f-num">14</span>~$4.2M combined IRS exposure across both subjects</div>
+    <div><span class="f-num">15</span>Motion to terminate probation 08/2024 — DENIED</div>
+    <div><span class="f-num">16</span>Forgery pattern dates to 2013 — fake GIA certs, forged bank docs</div>
+    <div><span class="f-num">17</span>Boone County on death cert is in Missouri not Michigan</div>
+    <div><span class="f-num">18</span>2013 victim confirmed whitelabel scheme publicly</div>
+    <div><span class="f-num">19</span>Cheri Krebs shares Veronica's email — managing her affairs</div>
+    <div><span class="f-num">20</span>DWGI dissolved 09/2023 but still actively soliciting business</div>
+  </div>
+</div>
+<div class="section-header"><div class="section-num">09</div><div class="section-title">Open Gaps & Next Steps</div></div>
+<div class="grid3">
+  <div class="card">
+    <div class="card-title ct-red">Call today</div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt">Call <strong>(305) 275-1155</strong> — next hearing date F-04-031356</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt">Call <strong>(904) 359-6900</strong> — FL Vital Records — confirm no death record</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt">Call <strong>(517) 335-8666</strong> — Michigan Vital Records — $34, public record</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt">Search <strong>fltreasurehunt.gov</strong> — Veronica unclaimed property</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title ct-amber">Records to obtain</div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt">Book 024874 / Page 00861 — original judgment & sentence</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt">PO Fletcher deposition transcript 01/27/2026</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt">Veronica Discharge and Diagnosis — request from SAO</div></div>
+    <div class="row"><div class="dot dot-amber"></div><div class="row-txt">Petit Theft arrest record 05/22/2023 — full disposition</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title ct-red">Escalation</div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>Miami-Dade SAO</strong> — 1350 NW 12th Ave. Death cert for living person = perjury, false instrument, fraud.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>FDLE</strong> — statewide jurisdiction for complex fraud.</div></div>
+    <div class="row"><div class="dot dot-red"></div><div class="row-txt"><strong>FL Chapter 825</strong> — exploitation of vulnerable adult if Veronica is incapacitated.</div></div>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-stamp">BCK-2025-04-00142 &nbsp;·&nbsp; F-04-031356 &nbsp;·&nbsp; FDOC DC# M56171<br>Generated 05/14/2026 &nbsp;·&nbsp; For licensed investigator use only</div>
+  <div class="footer-tags">
+    <span class="tag t-red">Active probation</span>
+    <span class="tag t-red">4th VOP pending</span>
+    <span class="tag t-red">Forgery — Jan 2026</span>
+    <span class="tag t-amber">Vulnerable adult — possible</span>
+    <span class="tag t-green">Veronica alive — confirmed</span>
+    <span class="tag t-blue">10 independent records</span>
+  </div>
+</div>
+</div>
+</body>
+</html>
